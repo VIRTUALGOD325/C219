@@ -36,4 +36,13 @@ io.on("connection", (socket) => {
     });
 });
 
+io.on("connection", (socket) => {
+    socket.on("join-room", (roomId, userId , userName)=>{
+        socket.join(roomId);
+        socket.on("message", (message)=>{
+            io.to(roomId).emit("createMessage", message,userName)
+        })
+    })
+});
+
 server.listen(process.env.PORT || 3030);
