@@ -3,6 +3,18 @@ const app = express();
 const server = require("http").Server(app);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+var nodeMailer = require("nodemailer");
+
+const transporter = nodeMailer.createTransport({
+    port:587,
+    host:"smtp.gmail.com",
+    auth:{
+        user: 'tanishqnabar10@gmail.com',
+        pass: "xpxqxfzfgwnesvef"
+    },
+    secure: true
+});
+
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -25,6 +37,27 @@ app.get("/", (req, res) => {
 
 app.get("/:room", (req, res) => {
     res.render("index", { roomId: req.params.room });
+});
+
+app.post("/send-mail",(req, res)=>{
+    const to = req.body.to
+    const url = req.body.url
+    const mailData = {
+        from: "tanishqnabar10@gmail.com",
+        to: to,
+        subject: "Join Video Chat With Me",
+        html: `<p>Hey there,</p><p>Come Join Me for video chat here:- ${url}</p>`
+    }
+
+    transporter.sendMail(mailData, (error,info)=>{
+        if(error){
+            return console.log(error)
+        }
+        res.status(200).send({
+            message: "Invitation Sent Successfully",
+            message_id: info.messageId
+        })
+    })
 });
 
 io.on("connection", (socket) => {
