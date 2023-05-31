@@ -3,7 +3,7 @@ const app = express();
 const server = require("http").Server(app);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-var nodeMailer = require("nodemailer");
+var nodeMailer = require('nodemailer');
 
 const transporter = nodeMailer.createTransport({
     port:587,
